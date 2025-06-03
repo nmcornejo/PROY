@@ -1,0 +1,82 @@
+:root {
+    /* Colores Principales del Diseño */
+    --color-fuerte-principal: #4B0082; /* Morado Oscuro */
+    --color-pastel-complementario: #E6E6FA; /* Lavanda (suave) */
+
+    /* Colores de Triaje (Fuertes) */
+    --color-critico: #FF0000; /* Rojo Vibrante */
+    --color-urgente: #FFA500; /* Naranja Brillante */
+    --color-moderado: #FFFF00; /* Amarillo Limón */
+    --color-leve: #00B050; /* Verde Esmeralda */
+
+    /* Colores de Triaje (Pastel/Fondo) */
+    --color-critico-pastel: #FFCCCC; /* Rosado Pastel */
+    --color-urgente-pastel: #FFDAB9; /* Naranja Melocotón */
+    --color-moderado-pastel: #FFFFCC; /* Amarillo Crema */
+    --color-leve-pastel: #CCFFCC; /* Verde Menta */
+}
+
+body {
+    font-family: 'Open Sans', sans-serif; /* Puedes añadir la fuente de Google Fonts si la importas */
+    background-color: #f8f9fa; /* Un gris muy claro para el fondo general */
+}
+
+/* Estilos para las filas de la tabla según la gravedad (JavaScript añadirá estas clases) */
+.table-row-critico {
+    background-color: var(--color-critico-pastel) !important;
+    color: var(--color-critico);
+    font-weight: bold;
+}
+
+.table-row-urgente {
+    background-color: var(--color-urgente-pastel) !important;
+    color: var(--color-urgente);
+}
+
+.table-row-moderado {
+    background-color: var(--color-moderado-pastel) !important;
+    color: var(--color-moderado);
+}
+
+.table-row-leve {
+    background-color: var(--color-leve-pastel) !important;
+    color: var(--color-leve);
+}
+
+/* Ajustes adicionales para visibilidad y espaciado */
+.card {
+    border: none; /* Quita bordes predeterminados de Bootstrap si no los quieres */
+}
+
+/* Estilos para el texto de gravedad en la tabla */
+.gravedad-critico { color: var(--color-critico); font-weight: bold; }
+.gravedad-urgente { color: var(--color-urgente); font-weight: bold; }
+.gravedad-moderado { color: var(--color-moderado); }
+.gravedad-leve { color: var(--color-leve); }
+
+/* Ajustes para el select multiple de examenes */
+#examenes, #atencionExamenes {
+    height: auto; /* Permite que el select se ajuste a la altura si es multiple */
+    min-height: 80px; /* Altura mínima para que sea visible */
+}
+
+/* Estilo para las tarjetas de contadores */
+.row.mb-4.text-center .col-md-3 div {
+    border: 1px solid rgba(0, 0, 0, 0.05); /* Un borde suave */
+    transition: transform 0.2s ease-in-out; /* Animación al pasar el mouse */
+}
+
+.row.mb-4.text-center .col-md-3 div:hover {
+    transform: translateY(-3px); /* Pequeño efecto al pasar el mouse */
+}
+
+/* Estilo para la barra de navegación para asegurar el color de texto en los enlaces */
+.navbar-dark .navbar-nav .nav-link {
+    color: white;
+}
+
+.navbar-dark .navbar-nav .nav-link:hover,
+.navbar-dark .navbar-nav .nav-link.active {
+    color: var(--color-pastel-complementario); /* Un tono más claro al pasar el mouse o activo */
+}
+

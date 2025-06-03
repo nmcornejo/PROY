@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Gestión de Pacientes en Emergencias</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: var(--color-fuerte-principal);">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <img src="logo.jpg" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
+                Emergencias Hospitalarias
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#RP" id="navLinkRegistroPaciente">Registro Pacientes</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="navLinkLogin">Iniciar Sesión</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="navLinkRegistroUsuario">Registrar Usuario</a>
+                    </li>
+                    <li class="nav-item d-none" id="navItemLogout">
+                        <a class="nav-link" href="#" id="navLinkLogout">Cerrar Sesión</a>
+                    </li>
+                    <li class="nav-item d-none" id="navItemUser">
+                        <span class="nav-link text-white" id="currentUserDisplay"></span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container my-5">
+        <div id="alertContainer" class="position-fixed top-0 start-50 translate-middle-x p-3" style="z-index: 1050;">
+        </div>
+
+        <section id="authSection" class="p-4 rounded shadow-sm mb-5" style="background-color: var(--color-pastel-complementario);">
+            <h2 class="text-center mb-4" style="color: var(--color-fuerte-principal);">Acceso al Sistema</h2>
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div id="loginFormContainer">
+                        <h3 class="mb-3" style="color: var(--color-fuerte-principal);">Iniciar Sesión</h3>
+                        <form id="loginForm">
+                            <div class="mb-3">
+                                <label for="loginUsername" class="form-label">Nombre de Usuario / Correo</label>
+                                <input type="text" class="form-control" id="loginUsername" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="loginPassword" class="form-label">Contraseña</label>
+                                <input type="password" class="form-control" id="loginPassword" required>
+                            </div>
+                            <button type="submit" class="btn btn-lg w-100" style="background-color: var(--color-fuerte-principal); color: white;">Entrar</button>
+
+                            <p class="text-center mt-3">
+                                ¿No tienes cuenta? <a href="#" id="showRegisterLink">Regístrate aquí</a><br>
+                                <a href="#" id="forgotPasswordLink">¿Olvidaste tu contraseña?</a>
+                            </p>
+                        </form>
+                    </div>
+
+                    <div id="forgotPasswordRequestFormContainer" class="d-none">
+                        <h3 class="mb-3" style="color: var(--color-fuerte-principal);">Restablecer Contraseña</h3>
+                        <form id="forgotPasswordRequestForm">
+                            <div class="mb-3">
+                                <label for="resetUsernameOrEmail" class="form-label">Ingresa tu Nombre de Usuario o Correo Electrónico</label>
+                                <input type="text" class="form-control" id="resetUsernameOrEmail" required>
+                                <div class="invalid-feedback">Ingresa tu nombre de usuario o correo.</div>
+                            </div>
+                            <button type="submit" class="btn btn-lg w-100" style="background-color: var(--color-fuerte-principal); color: white;">Enviar Solicitud de Restablecimiento</button>
+                            <p class="text-center mt-3"><a href="#" id="backToLoginFromForgotLink">Volver a Iniciar Sesión</a></p>
+                        </form>
+                    </div>
+
+                    <div id="updatePasswordFormContainer" class="d-none">
+                        <h3 class="mb-3" style="color: var(--color-fuerte-principal);">Establecer Nueva Contraseña</h3>
+                        <form id="updatePasswordForm">
+                            <div class="mb-3">
+                                <label for="newPassword" class="form-label">Nueva Contraseña</label>
+                                <input type="password" class="form-control" id="newPassword" required>
+                                <div class="form-text">Mín. 8 caracteres, 1 mayúscula, 1 minúscula, 1 número, 1 especial.</div>
+                                <div class="invalid-feedback" id="newPasswordFeedback"></div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="confirmNewPassword" class="form-label">Confirmar Nueva Contraseña</label>
+                                <input type="password" class="form-control" id="confirmNewPassword" required>
+                                <div class="invalid-feedback" id="confirmNewPasswordFeedback">Las contraseñas no coinciden.</div>
+                            </div>
+                            <button type="submit" class="btn btn-lg w-100" style="background-color: var(--color-fuerte-principal); color: white;">Actualizar Contraseña</button>
+                            <p class="text-center mt-3"><a href="#" id="backToLoginFromUpdateLink">Volver a Iniciar Sesión</a></p>
+                        </form>
+                    </div>
+
+                    <div id="registerUserFormContainer" class="d-none">
+                        <h3 class="mb-3" style="color: var(--color-fuerte-principal);">Registrar Nuevo Usuario</h3>
+                        <form id="registerUserForm">
+                            <div class="mb-3">
+                                <label for="registerUsername" class="form-label">Nombre de Usuario</label>
+                                <input type="text" class="form-control" id="registerUsername" required>
+                                <div class="invalid-feedback">El nombre de usuario es obligatorio.</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="registerEmail" class="form-label">Correo Electrónico</label>
+                                <input type="email" class="form-control" id="registerEmail" required>
+                                <div class="invalid-feedback">Ingrese un correo electrónico válido.</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="registerPassword" class="form-label">Contraseña</label>
+                                <input type="password" class="form-control" id="registerPassword" required>
+                                <div class="form-text">Mín. 8 caracteres, 1 mayúscula, 1 minúscula, 1 número, 1 especial.</div>
+                                <div class="invalid-feedback" id="passwordFeedback"></div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="confirmPassword" class="form-label">Confirmar Contraseña</label>
+                                <input type="password" class="form-control" id="confirmPassword" required>
+                                <div class="invalid-feedback">Las contraseñas no coinciden.</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="userRole" class="form-label">Rol del Usuario</label>
+                                <select class="form-select" id="userRole" required>
+                                    <option value="">Seleccione un rol</option>
+                                    <option value="medico">Médico</option>
+                                    <option value="ventanilla">Personal de Ventanilla</option>
+                                </select>
+                                <div class="invalid-feedback">Seleccione un rol para el usuario.</div>
+                            </div>
+                            <button type="submit" class="btn btn-lg w-100" style="background-color: var(--color-fuerte-principal); color: white;">Registrar</button>
+                            <p class="text-center mt-3">¿Ya tienes cuenta? <a href="#" id="showLoginLink">Inicia sesión</a></p>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="patientManagementSection" class="d-none">
+            <h1 class="text-center mb-4" style="color: var(--color-fuerte-principal);">Sistema de Gestión de Pacientes en Emergencias</h1>
+
+            <div class="row mb-4 text-center">
+                <div class="col-md-3">
+                    <div class="p-3 rounded shadow-sm d-flex flex-column align-items-center" style="background-color: var(--color-critico-pastel);">
+                        <h4 class="mb-1" style="color: var(--color-critico);">Críticos</h4>
+                        <span class="badge bg-danger rounded-pill fs-5" id="contadorCritico">0</span>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="p-3 rounded shadow-sm d-flex flex-column align-items-center" style="background-color: var(--color-urgente-pastel);">
+                        <h4 class="mb-1" style="color: var(--color-urgente);">Urgentes</h4>
+                        <span class="badge bg-warning text-dark rounded-pill fs-5" id="contadorUrgente">0</span>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="p-3 rounded shadow-sm d-flex flex-column align-items-center" style="background-color: var(--color-moderado-pastel);">
+                        <h4 class="mb-1" style="color: var(--color-moderado);">Moderados</h4>
+                        <span class="badge bg-info text-dark rounded-pill fs-5" id="contadorModerado">0</span>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="p-3 rounded shadow-sm d-flex flex-column align-items-center" style="background-color: var(--color-leve-pastel);">
+                        <h4 class="mb-1" style="color: var(--color-leve);">Leves</h4>
+                        <span class="badge bg-success rounded-pill fs-5" id="contadorLeve">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card p-4 shadow-sm mb-5" style="background-color: var(--color-pastel-complementario);" id="RP">
+                <h2 class="card-title text-center mb-4" style="color: var(--color-fuerte-principal);">Registrar Nuevo Paciente</h2>
+                <form id="patientForm" class="row g-3">
+                    <div class="col-md-6">
+                        <label for="nombreCompleto" class="form-label">Nombre Completo</label>
+                        <input type="text" class="form-control" id="nombreCompleto" required>
+                        <div class="invalid-feedback">El nombre completo es obligatorio.</div>
+                    </div>
+                    <div class="col-md-2">
+                        <label for="edad" class="form-label">Edad</label>
+                        <input type="number" class="form-control" id="edad" min="1" max="120" required>
+                        <div class="invalid-feedback">La edad debe ser un número entre 1 y 120.</div>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="genero" class="form-label">Género</label>
+                        <select class="form-select" id="genero" required>
+                            <option value="">Seleccione...</option>
+                            <option value="Hombre">Hombre</option>
+                            <option value="Mujer">Mujer</option>
+                            <option value="Otro">Otro</option>
+                        </select>
+                        <div class="invalid-feedback">El género es obligatorio.</div>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="documento" class="form-label">Documento de Identidad (CI o Pasaporte)</label>
+                        <input type="text" class="form-control" id="documento" minlength="5" maxlength="15" required>
+                        <div class="invalid-feedback">El documento debe tener entre 5 y 15 caracteres.</div>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="nivelGravedad" class="form-label">Nivel de Gravedad (Triaje)</label>
+                        <select class="form-select" id="nivelGravedad" required>
+                            <option value="">Seleccione...</option>
+                            <option value="Critico">Crítico</option>
+                            <option value="Urgente">Urgente</option>
+                            <option value="Moderado">Moderado</option>
+                            <option value="Leve">Leve</option>
+                        </select>
+                        <div class="invalid-feedback">El nivel de gravedad es obligatorio.</div>
+                    </div>
+                    <div class="col-12">
+                        <label for="sintomas" class="form-label">Síntomas Principales</label>
+                        <textarea class="form-control" id="sintomas" rows="3" required></textarea>
+                        <div class="invalid-feedback">Los síntomas son obligatorios.</div>
+                    </div>
+                    <div class="col-12">
+                        <label for="tratamiento" class="form-label">Tratamiento Inicial</label>
+                        <textarea class="form-control" id="tratamiento" rows="2"></textarea>
+                    </div>
+                    <div class="col-12">
+                        <label for="medicamentos" class="form-label">Medicamentos Administrados</label>
+                        <textarea class="form-control" id="medicamentos" rows="2"></textarea>
+                    </div>
+                    <div class="col-12">
+                        <label for="examenes" class="form-label">Exámenes Solicitados</label>
+                        <select class="form-select" id="examenes" multiple>
+                            <option value="Hemograma">Hemograma</option>
+                            <option value="Radiografia">Radiografía</option>
+                            <option value="Ecografia">Ecografía</option>
+                            <option value="Analisis de Orina">Análisis de Orina</option>
+                            <option value="Tomografia">Tomografía</option>
+                            <option value="Otro">Otro (especificar en Observaciones)</option>
+                        </select>
+                    </div>
+                    <div class="col-12 text-center mt-4">
+                        <button type="submit" class="btn btn-lg" style="background-color: var(--color-fuerte-principal); color: white;">Registrar Paciente</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="card p-4 shadow-sm" style="background-color: var(--color-pastel-complementario);">
+                <h2 class="card-title text-center mb-4" style="color: var(--color-fuerte-principal);">Pacientes Registrados</h2>
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped" id="patientTable">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Edad</th>
+                                <th>Género</th>
+                                <th>Documento</th>
+                                <th>Gravedad</th>
+                                <th>Fecha Ingreso</th>
+                                <th class="text-center">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="patientTableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div class="modal fade" id="historialModal" tabindex="-1" aria-labelledby="historialModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color: var(--color-fuerte-principal); color: white;">
+                    <h5 class="modal-title" id="historialModalLabel">Historial Clínico de: <span id="historialPacienteNombre"></span></h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="mb-3">**Documento:** <span id="historialPacienteDocumento"></span> | **Edad:** <span id="historialPacienteEdad"></span></p>
+
+                    <div id="historialAtenciones">
+                        <p class="text-muted text-center" id="noHistorialMessage">No hay atenciones registradas para este paciente.</p>
+                    </div>
+
+                    <hr>
+
+                    <div id="nuevaAtencionFormContainer">
+                        <h4 class="mb-3" style="color: var(--color-fuerte-principal);">Registrar Nueva Atención</h4>
+                        <form id="nuevaAtencionForm" class="row g-3">
+                            <div class="col-12">
+                                <label for="atencionSintomas" class="form-label">Síntomas en esta atención</label>
+                                <textarea class="form-control" id="atencionSintomas" rows="2" required></textarea>
+                                <div class="invalid-feedback">Los síntomas son obligatorios.</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="atencionNivelGravedad" class="form-label">Nivel de Gravedad (Triaje)</label>
+                                <select class="form-select" id="atencionNivelGravedad" required>
+                                    <option value="">Seleccione...</option>
+                                    <option value="Critico">Crítico</option>
+                                    <option value="Urgente">Urgente</option>
+                                    <option value="Moderado">Moderado</option>
+                                    <option value="Leve">Leve</option>
+                                </select>
+                                <div class="invalid-feedback">El nivel de gravedad es obligatorio.</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="atencionDiagnostico" class="form-label">Diagnóstico (opcional)</label>
+                                <input type="text" class="form-control" id="atencionDiagnostico">
+                            </div>
+                            <div class="col-12">
+                                <label for="atencionTratamiento" class="form-label">Tratamiento administrado en esta atención</label>
+                                <textarea class="form-control" id="atencionTratamiento" rows="2"></textarea>
+                            </div>
+                            <div class="col-12">
+                                <label for="atencionMedicamentos" class="form-label">Medicamentos recetados/administrados</label>
+                                <textarea class="form-control" id="atencionMedicamentos" rows="2"></textarea>
+                            </div>
+                             <div class="col-12">
+                                <label for="atencionExamenes" class="form-label">Exámenes Solicitados</label>
+                                <select class="form-select" id="atencionExamenes" multiple>
+                                    <option value="Hemograma">Hemograma</option>
+                                    <option value="Radiografia">Radiografía</option>
+                                    <option value="Ecografia">Ecografía</option>
+                                    <option value="Analisis de Orina">Análisis de Orina</option>
+                                    <option value="Tomografia">Tomografía</option>
+                                    <option value="Otro">Otro (especificar en Observaciones)</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label for="atencionObservaciones" class="form-label">Observaciones del Médico</label>
+                                <textarea class="form-control" id="atencionObservaciones" rows="3"></textarea>
+                            </div>
+                            <div class="col-12 text-center mt-4">
+                                <button type="submit" class="btn btn-lg" style="background-color: var(--color-fuerte-principal); color: white;">Guardar Atención</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="script.js"></script>
+</body>
+</html>
